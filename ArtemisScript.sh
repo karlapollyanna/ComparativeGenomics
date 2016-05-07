@@ -18,10 +18,10 @@
 
 while getopts ":h:" h
 do 
-	echo "\n\n Script to Artemis/Act analysis "
-	echo " It must be run in a GUI environment \n"
-	echo " Usage: ./ArtemisScript.sh <Complete path of genome> <Complete path of blast output directory> <Complete path of Artemis/Act> "
-	echo " Genome file must be in .fna format \n\n"
+	echo " Script to Artemis/Act analysis "
+	echo " It must be run in a GUI environment "
+	echo " Usage: ArtemisScript.sh <Complete path of genome> <Complete path of blast output directory> <Complete path of Artemis-Act> "
+	echo " Genome file must be in .fna format "
 done
 
 
@@ -39,28 +39,24 @@ then
 fi
 
 
-if [ ! -e $BlastDir ] # Check the existence of Blast Output directory
+if [ ! -e $BlastDir ] # Check the existence of Blast Output directory and only works if directory does not exist
 then
 
     mkdir $BlastDir   # Creates the directory if does not exist
+	cd $path_genomes
 
-fi
-
-
-######### Blast Script
-
-cd $path_genomes
-
-list=`ls *.fna`
-for i in $list
-do
+	list=`ls *.fna`
+	for i in $list
+	do
         makeblastdb -in $i -dbtype nucl -out temp	# Creates Blast db for each file and armazenates on temporary variable
         for j in $list
         do
-                blastn -query $j -db temp -out ${j}_vs_${i}.out -outfmt 6 -num_threads 4  # Run blastn
-                mv *.out $BlastDir
-done 
-done
+            blastn -query $j -db temp -out ${j}_vs_${i}.out -outfmt 6 -num_threads 4  # Run blastn
+            mv *.out $BlastDir
+	done 
+	done
+
+fi
 
 
 ######### Artemis
